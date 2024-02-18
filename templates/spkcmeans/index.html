@@ -1,0 +1,115 @@
+{% extends 'spkcmeans/base.html' %}
+
+{% load my_tags %}
+
+{% block content %}
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-lg-12">
+      <form class="form" method="post"action=" {% url 'indexFuzzyCmeans' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-4 col-12">
+                <div class="form-group">
+                    <input type="number" id="first-name-column" required class="form-control"
+                    placeholder="Klaster" name="klaster">
+                </div>
+            </div>
+            <div class="col-md-4 col-12">
+                <div class="form-group">
+                    <input type="number" id="last-name-column" required class="form-control"
+                        placeholder="Pangkat
+                        " name="pangkat">
+                </div>
+            </div>
+            <div class="col-md-4 col-12">
+                <div class="form-group">
+                    <input type="number" id="city-column" required class="form-control" placeholder="Max Iterasi"
+                        name="maxiter">
+                </div>
+            </div>
+            <div class="col-md-4 col-12">
+                <div class="form-group">
+                    <input type="number" id="country-floating" required class="form-control"
+                        name="fo" placeholder="Fungsi Objektif">
+                </div>
+            </div>
+            <div class="col-md-4 col-12">
+                <div class="form-group">
+                    <input type="number" id="company-column" required class="form-control"
+                        name="error" step="0.00001" min="0.00001" max="1" placeholder="Eror terkecil">
+                </div>
+            </div>
+            <div class="col-12 d-flex justify-content-start mt-3">
+                <button type="submit" class="btn bg-primary" style="color: white; width: 350px; font-family: monospace; font-weight: bold;">MULAI PERHITUNGAN FCM</button>
+            </div>
+        </div>
+    </form>
+    </div>
+  </div>
+
+  {% if dataViews != null %}
+
+  <div class="alert mt-5"><h5>Perhitungan selesai pada iterasi ke {{iterasiFCM}}.</h5>
+    <tr>
+        <td>Klaster : {{dataInput.JUMLAH_CLUSTER}}</td><br>
+        <td>Pangkat : {{dataInput.PANGKAT}}</td><br>
+        <td>Max Iterasi : {{dataInput.MAX_ITER}}</td><br>
+        <td>Fungsi objektif : {{dataInput.FUNGSI_OBJECTIF_AWAL}}</td><br>
+        <td>Eror terkecil : {{dataInput.EROR_TERKECIL}}</td>
+    </tr>
+  </div>
+  <div class="row alert mt-5 table-responsive">
+    <div class="col-lg-12">
+        <div>HASIL CLUSTER</div>
+        {{ dataViews.cluster|cluster:dataInput.JUMLAH_CLUSTER|safe }}
+    </div>
+ </div>
+<div class="row table-responsive">
+    <div class="alert col-lg-12">
+        <div class="row">
+            <div class="col-lg-12 d-flex justify-content-center">
+                <span> DETAIL PEHITUNGAN FCM</span>
+            </div>
+         </div>
+                DATA UJI
+                <table id="" class="table responsive nowrap" width="100%">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            {% for d in dataKriteria %}
+                                <td>{{ d.kriteria }}</td>
+                            {% endfor %}  
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in dataViews.bobot %}
+                        <tr>
+                            <td>data - {{ forloop.counter }}</td> 
+                            {% for d in data %}
+                                <td>{{ d }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            
+  {% getArr dataViews.matrixUbaruIter as mUbI %}
+  {% getArr dataViews.perhitunganPusatKlaster as pPc %}
+  {% getArr dataViews.hasilPusatKlaster as hPc %}
+  {% getArr dataViews.perhitunganFungsiObjectif as pFo %}
+  {% getArr dataViews.hasilFungsiObjektif as hFo %}
+  
+  {% for d in mUbI %}
+  {{ mUbI|matrixU:forloop.counter|safe }}
+  {{ pPc|pusatCluster:forloop.counter|safe }}
+  {{ hPc|hasilpusatCluster:forloop.counter|safe }}
+  {{ pFo|fungsiObjektif:forloop.counter|safe }}
+  {{ hFo|hasilfungsiObjektif:forloop.counter|safe }}
+  {% endfor %}  
+  
+    </div>
+</div>
+{% endif %}
+</div>
+{% endblock content %}

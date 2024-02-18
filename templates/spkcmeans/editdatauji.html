@@ -1,0 +1,50 @@
+{% extends 'spkcmeans/base.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-lg-12">
+      <form class="form" method="post" action="{% url 'editDataUji' idD %}">
+        {% csrf_token %}
+        <div class="row"> 
+            <div class="col-md-12 col-12">
+                <div class="form-group">
+                    <input type="text" class="form-control"
+                    placeholder="id" name="id" readonly value="{{idD}}">
+                </div>
+                <div class="form-group">
+                    <label style="color: white;">Nama</label>
+                    <input type="text" id="_nama" class="form-control"
+                    placeholder="Nama" name="nama" required value="{{datauji.nama}}">
+                </div>
+            </div>
+            {% for data in detaildatauji %}
+            <input type="hidden" name="kriteria" value="{{data.id_kriteria}}">
+                <div class="col-md-4 col-12">
+                    <fieldset class="form-group">
+                        <div class="form-group">
+                            <input type="hidden" class="form-control"
+                            placeholder="" name="krit" readonly value="{{data.kriteria_id}}">
+                        </div>
+                        <label style="color: white;">{{ data.kriteria_id|getNamaKriteria}}</label>
+                        <select class="form-select" id="basicSelect" name="subkrit" required >
+                            <option value="{{data.subkriteria_id}}">{{ data.subkriteria_id|getNamaSub }}</option>
+                            {% get_subkriteria_by_kriteria data.kriteria_id as dataBaru %}
+                            {% for subkriteria in dataBaru %}
+                                <option value="{{ subkriteria.id_sub }}">{{ subkriteria.subkriteria }}</option>
+                            {% endfor %}
+                        </select>
+                    </fieldset>          
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-12 d-flex justify-content-between mt-5">
+            <button type="submit" class="btn bg-primary" style="color: white; width: 300px; font-family: monospace; font-weight: bold;">Save</button>
+        </div>
+        <a href ="{% url 'dataUji' %}"class="btn btn-secondary mt-4" style="color: white; width: 150px; font-family: monospace; font-weight: bold;">Kembali</a>
+    </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+

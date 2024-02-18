@@ -1,0 +1,66 @@
+{% extends 'spkcmeans/base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-lg-12">
+      <form class="form" method="post" action="{% url 'kriteria' %}">
+
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-4 col-12">
+                <div class="form-group">
+                    <input type="text" id="first-name-column" class="form-control"
+                    placeholder="Masukan data disini...." name="kriteria"required>
+                </div>
+            </div>
+            <div class="col-12 d-flex justify-content-start mt-3">
+                <button type="submit" class="btn bg-primary" style="color: white; width: 200px; font-family: monospace; font-weight: bold;">
+                  <i class="fa fa-plus"></i> Tambah</button>
+            </div>
+        </div>
+    </form>
+    </div>
+  </div>
+  <div class="row mt-5">
+  
+            {% if messages %}
+            {% for message in messages %} 
+            <div class="alert">
+                <tr>
+                    <td><i class="bi bi-exclamation-triangle"></i></td><br>
+                    <td>{{message}}</td>
+                </tr>
+            </div>
+            {% endfor %}    
+            {% endif %} 
+       
+    <div class="col-lg-12"> 
+        <div class="">
+            <table id="myTable" class="display responsive nowrap" width="100%">
+            <thead>
+                <tr>
+                    <!-- <th>UUID</th> -->
+                    <th>Kriteria</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in getAllKriteria %}
+                <tr>
+                    <!-- <td>{{ data.id_kriteria }}</td> -->
+                    <td>{{ data.kriteria }}</td>
+                    <td>
+                        <a class="badge bg-primary" href="{% url 'detailKriteria' data.id_kriteria %}"><i class="fa fa-pen"></i></a>
+                        <a class="badge bg-success" href="{% url 'editKriteria' data.id_kriteria  %}"><i class="fa fa-edit"></i></a>
+                        <a class="badge bg-danger" href="{% url 'delKriteria' data.id_kriteria %}"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>  
+    </div>
+  </div>
+</div>
+{% endblock content %}

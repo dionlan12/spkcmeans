@@ -1,0 +1,71 @@
+{% extends 'spkcmeans/base.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-lg-12">
+      <form class="form" method="post" action="{% url 'dataUji' %}">
+        {% csrf_token %}
+        <div class="row"> 
+            <div class="col-md-4 col-12">
+                <div class="form-group">
+                    <input type="text" id="_nama" class="form-control"
+                    placeholder="Nama" name="nama" required>
+                </div>
+            </div>
+            {% for data in getAllKriteria %}
+            <input type="hidden" name="kriteria" value="{{data.id_kriteria}}">
+                <div class="col-md-4 col-12">
+                    <fieldset class="form-group">
+                        <select class="form-select" id="basicSelect" name="subkrit"required>
+                            <option>{{ data.kriteria }}</option>
+                            {% get_subkriteria_by_kriteria data.id_kriteria as dataBaru %}
+                            {% for subkriteria in dataBaru %}
+                                <option value="{{ subkriteria.id_sub }}">{{ subkriteria.subkriteria }}</option>
+                            {% endfor %}
+                        </select>
+                    </fieldset>          
+                </div>
+            {% endfor %}
+            <div class="col-12 d-flex justify-content-start mt-5">
+                <button type="submit" class="btn bg-primary" style="color: white; width: 150px; font-family: monospace; font-weight: bold;">Save</button>
+            </div>
+        </div>
+    </form>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-lg-12">
+        <div class="">
+            <table id="myTable" class="display responsive nowrap" width="100%">
+            <thead>
+                <tr>
+                <th>Nama</th>
+                {% for x in getAllKriteria %}
+                    <th>{{ x.kriteria }}</th>
+                {% endfor %}
+                <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in dataUji %}
+                {% get_detail_data_uji_by_id_data_uji x.id_datauji as dataBaru %}
+                <tr>
+                    <td>{{ x.nama }}</td>
+                    {% for val in dataBaru %}
+                        <td>{{val.subkriteria_id|getSubKriteria}} ({{ val.subkriteria_id|getBobotSubKriteria }})</td>
+                    {% endfor %}
+                    <td>
+                        <a class="badge bg-success" href="{% url 'editDataUji' x.id_datauji %}"><i class="fa fa-edit"></i></a>
+                        <a class="badge bg-danger" href="{% url 'delDataUji' x.id_datauji %}"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>  
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
