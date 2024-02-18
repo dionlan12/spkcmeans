@@ -1,0 +1,2 @@
+# spkcmeans
+aplikasifuzzycmeans
